@@ -38,6 +38,9 @@ public class ItemPedido {
     @Version
     private Integer version;
 
+    public ItemPedido() {
+    }
+
     public ItemPedido(Pedido pedido, ProdutoServico produtoServico, Integer quantidade) {
         if (!produtoServico.getAtivo()) {
             throw new BusinessException("Produto/Serviço desativado: " + produtoServico.getNome());

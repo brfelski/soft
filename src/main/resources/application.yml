@@ -2,8 +2,8 @@ spring:
   application:
     name: soft
   datasource:
-    url: jdbc:postgresql://db.pxxlvaihfgfxlalmylzf.supabase.co:5432/postgres
-    username: postgres
+    url: jdbc:postgresql://aws-1-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require&prepareThreshold=0
+    username: postgres.pxxlvaihfgfxlalmylzf
     password: Olc36v5P9CLTSmKk
     driver-class-name: org.postgresql.Driver
   jpa:
@@ -16,6 +16,10 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+  data:
+    web:
+      pageable:
+        serialization-mode: via-dto
 
 management:
   endpoints:

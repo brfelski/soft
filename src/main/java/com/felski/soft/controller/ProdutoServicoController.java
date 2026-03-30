@@ -7,9 +7,13 @@ import com.felski.soft.service.ProdutoServicoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.felski.soft.infrastructure.assembler.ProdutoServicoModelAssembler;
 
 import java.util.UUID;
 
@@ -18,34 +22,39 @@ import java.util.UUID;
 public class ProdutoServicoController {
 
     private final ProdutoServicoService service;
+    private final ProdutoServicoModelAssembler assembler;
+    private final PagedResourcesAssembler<ProdutoServicoResponse> pagedResourcesAssembler;
 
-    public ProdutoServicoController(ProdutoServicoService service) {
+    public ProdutoServicoController(ProdutoServicoService service, ProdutoServicoModelAssembler assembler, PagedResourcesAssembler<ProdutoServicoResponse> pagedResourcesAssembler) {
         this.service = service;
+        this.assembler = assembler;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProdutoServicoResponse>> listar(
+    public ResponseEntity<PagedModel<EntityModel<ProdutoServicoResponse>>> listar(
             @RequestParam(required = false) Boolean apenasAtivos,
             @RequestParam(required = false) TipoItem tipoItem,
             Pageable pageable) {
-        return ResponseEntity.ok(service.listarTodos(apenasAtivos, tipoItem, pageable));
+        Page<ProdutoServicoResponse> page = service.listarTodos(apenasAtivos, tipoItem, pageable);
+        return ResponseEntity.ok(pagedResourcesAssembler.toModel(page, assembler));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoServicoResponse> buscarPorId(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+    public ResponseEntity<EntityModel<ProdutoServicoResponse>> buscarPorId(@PathVariable UUID id) {
+        return ResponseEntity.ok(assembler.toModel(service.buscarPorId(id)));
     }
 
     @PostMapping
-    public ResponseEntity<ProdutoServicoResponse> criar(@Valid @RequestBody ProdutoServicoRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(request));
+    public ResponseEntity<EntityModel<ProdutoServicoResponse>> criar(@Valid @RequestBody ProdutoServicoRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(service.criar(request)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoServicoResponse> atualizar(
+    public ResponseEntity<EntityModel<ProdutoServicoResponse>> atualizar(
             @PathVariable UUID id,
             @Valid @RequestBody ProdutoServicoRequest request) {
-        return ResponseEntity.ok(service.atualizar(id, request));
+        return ResponseEntity.ok(assembler.toModel(service.atualizar(id, request)));
     }
 
     @DeleteMapping("/{id}")
@@ -55,7 +64,7 @@ public class ProdutoServicoController {
     }
 
     @PatchMapping("/{id}/desativar")
-    public ResponseEntity<ProdutoServicoResponse> desativar(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.desativar(id));
+    public ResponseEntity<EntityModel<ProdutoServicoResponse>> desativar(@PathVariable UUID id) {
+        return ResponseEntity.ok(assembler.toModel(service.desativar(id)));
     }
 }

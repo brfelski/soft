@@ -8,9 +8,13 @@ import com.felski.soft.service.PedidoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.felski.soft.infrastructure.assembler.PedidoModelAssembler;
 
 import java.util.UUID;
 
@@ -19,51 +23,56 @@ import java.util.UUID;
 public class PedidoController {
 
     private final PedidoService service;
+    private final PedidoModelAssembler assembler;
+    private final PagedResourcesAssembler<PedidoResponse> pagedResourcesAssembler;
 
-    public PedidoController(PedidoService service) {
+    public PedidoController(PedidoService service, PedidoModelAssembler assembler, PagedResourcesAssembler<PedidoResponse> pagedResourcesAssembler) {
         this.service = service;
+        this.assembler = assembler;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @GetMapping
-    public ResponseEntity<Page<PedidoResponse>> listar(
+    public ResponseEntity<PagedModel<EntityModel<PedidoResponse>>> listar(
             @RequestParam(required = false) StatusPedido status,
             Pageable pageable) {
-        return ResponseEntity.ok(service.listarTodos(status, pageable));
+        Page<PedidoResponse> page = service.listarTodos(status, pageable);
+        return ResponseEntity.ok(pagedResourcesAssembler.toModel(page, assembler));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PedidoResponse> buscarPorId(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+    public ResponseEntity<EntityModel<PedidoResponse>> buscarPorId(@PathVariable UUID id) {
+        return ResponseEntity.ok(assembler.toModel(service.buscarPorId(id)));
     }
 
     @PostMapping
-    public ResponseEntity<PedidoResponse> criar() {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.criar());
+    public ResponseEntity<EntityModel<PedidoResponse>> criar() {
+        return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(service.criar()));
     }
 
     @PostMapping("/{id}/itens")
-    public ResponseEntity<PedidoResponse> adicionarItem(
+    public ResponseEntity<EntityModel<PedidoResponse>> adicionarItem(
             @PathVariable UUID id,
             @Valid @RequestBody ItemPedidoRequest request) {
-        return ResponseEntity.ok(service.adicionarItem(id, request));
+        return ResponseEntity.ok(assembler.toModel(service.adicionarItem(id, request)));
     }
 
     @DeleteMapping("/{id}/itens/{itemId}")
-    public ResponseEntity<PedidoResponse> removerItem(
+    public ResponseEntity<EntityModel<PedidoResponse>> removerItem(
             @PathVariable UUID id,
             @PathVariable UUID itemId) {
-        return ResponseEntity.ok(service.removerItem(id, itemId));
+        return ResponseEntity.ok(assembler.toModel(service.removerItem(id, itemId)));
     }
 
     @PatchMapping("/{id}/desconto")
-    public ResponseEntity<PedidoResponse> aplicarDesconto(
+    public ResponseEntity<EntityModel<PedidoResponse>> aplicarDesconto(
             @PathVariable UUID id,
             @Valid @RequestBody AplicarDescontoRequest request) {
-        return ResponseEntity.ok(service.aplicarDesconto(id, request));
+        return ResponseEntity.ok(assembler.toModel(service.aplicarDesconto(id, request)));
     }
 
     @PatchMapping("/{id}/fechar")
-    public ResponseEntity<PedidoResponse> fechar(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.fechar(id));
+    public ResponseEntity<EntityModel<PedidoResponse>> fechar(@PathVariable UUID id) {
+        return ResponseEntity.ok(assembler.toModel(service.fechar(id)));
     }
 }
