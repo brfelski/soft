@@ -2,11 +2,13 @@ package com.felski.soft.dto.response;
 
 import com.felski.soft.domain.entity.Pedido;
 import com.felski.soft.domain.enums.StatusPedido;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+@Schema(description = "Representação de resposta de um pedido")
 public record PedidoResponse(
         UUID id,
         StatusPedido statusPedido,

@@ -1,5 +1,6 @@
 package com.felski.soft.controller;
 
+import com.felski.soft.controller.doc.ProdutoServicoControllerDoc;
 import com.felski.soft.domain.enums.TipoItem;
 import com.felski.soft.dto.request.ProdutoServicoRequest;
 import com.felski.soft.dto.response.ProdutoServicoResponse;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/produtos-servicos")
-public class ProdutoServicoController {
+public class ProdutoServicoController implements ProdutoServicoControllerDoc {
 
     private final ProdutoServicoService service;
     private final ProdutoServicoModelAssembler assembler;

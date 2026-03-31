@@ -1,5 +1,6 @@
 package com.felski.soft.controller;
 
+import com.felski.soft.controller.doc.PedidoControllerDoc;
 import com.felski.soft.domain.enums.StatusPedido;
 import com.felski.soft.dto.request.AplicarDescontoRequest;
 import com.felski.soft.dto.request.ItemPedidoRequest;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/pedidos")
-public class PedidoController {
+public class PedidoController implements PedidoControllerDoc {
 
     private final PedidoService service;
     private final PedidoModelAssembler assembler;
