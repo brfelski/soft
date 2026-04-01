@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,8 +31,8 @@ public class PedidoServiceImpl implements PedidoService {
     private final ItemPedidoRepository itemPedidoRepository;
 
     public PedidoServiceImpl(PedidoRepository pedidoRepository,
-                              ProdutoServicoRepository produtoServicoRepository,
-                              ItemPedidoRepository itemPedidoRepository) {
+            ProdutoServicoRepository produtoServicoRepository,
+            ItemPedidoRepository itemPedidoRepository) {
         this.pedidoRepository = pedidoRepository;
         this.produtoServicoRepository = produtoServicoRepository;
         this.itemPedidoRepository = itemPedidoRepository;

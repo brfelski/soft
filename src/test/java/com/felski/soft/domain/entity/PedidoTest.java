@@ -1,6 +1,6 @@
 package com.felski.soft.domain.entity;
 
-import com.felski.soft.domain.enums.StatusPedido;
+
 import com.felski.soft.domain.enums.TipoItem;
 import com.felski.soft.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +60,9 @@ class PedidoTest {
     @DisplayName("Não deve fechar pedido sem itens")
     void naoDeveFecharPedidoVazio() {
         assertThat(pedido.getItens()).isEmpty();
-        assertThat(pedido.getStatusPedido()).isEqualTo(StatusPedido.ABERTO);
+        assertThatThrownBy(() -> pedido.fechar())
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("sem itens");
     }
 
     @Test
@@ -84,5 +86,29 @@ class PedidoTest {
 
         assertThat(pedido.getItens().get(0).getPrecoUnitario())
                 .isEqualByComparingTo(precoNaAdicao);
+    }
+
+    @Test
+    @DisplayName("Não deve adicionar item com quantidade zero ou negativa")
+    void naoDeveAdicionarItemComQuantidadeInvalida() {
+        assertThatThrownBy(() -> pedido.adicionarItem(produto, 0))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("maior que zero");
+
+        assertThatThrownBy(() -> pedido.adicionarItem(produto, -1))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("maior que zero");
+    }
+
+    @Test
+    @DisplayName("Não deve aplicar desconto menor que 0 ou maior que 100")
+    void naoDeveAplicarDescontoInvalido() {
+        assertThatThrownBy(() -> pedido.aplicarDesconto(new BigDecimal("-1")))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("entre 0 e 100");
+
+        assertThatThrownBy(() -> pedido.aplicarDesconto(new BigDecimal("101")))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("entre 0 e 100");
     }
 }

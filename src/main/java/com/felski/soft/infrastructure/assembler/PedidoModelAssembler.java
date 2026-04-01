@@ -13,6 +13,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class PedidoModelAssembler
         extends RepresentationModelAssemblerSupport<PedidoResponse, EntityModel<PedidoResponse>> {
 
+    @SuppressWarnings("unchecked")
     public PedidoModelAssembler() {
         super(PedidoController.class, (Class<EntityModel<PedidoResponse>>) (Class<?>) EntityModel.class);
     }

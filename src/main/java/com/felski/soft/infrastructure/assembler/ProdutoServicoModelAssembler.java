@@ -13,6 +13,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ProdutoServicoModelAssembler
         extends RepresentationModelAssemblerSupport<ProdutoServicoResponse, EntityModel<ProdutoServicoResponse>> {
 
+    @SuppressWarnings("unchecked")
     public ProdutoServicoModelAssembler() {
         super(ProdutoServicoController.class,
                 (Class<EntityModel<ProdutoServicoResponse>>) (Class<?>) EntityModel.class);

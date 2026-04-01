@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({ BusinessException.class, IllegalStateException.class, IllegalArgumentException.class })
     public ResponseEntity<ApiError> handleBusiness(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+        return ResponseEntity.status(422)
                 .body(new ApiError(422, ex.getMessage()));
     }
 
